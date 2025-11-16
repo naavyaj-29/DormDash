@@ -243,7 +243,10 @@ const ChefPostingSystem = () => {
   const LandingPage = () => (
     <div className={styles.landingWrapper}>
       <div className={styles.landingCenter}>
-        <h1 className={styles.landingTitle}>DormDash</h1>
+        <div className={styles.landingTitleContainer}>
+          <img src="/logo.png" alt="DormDash Logo" className={styles.landingLogo} />
+          <h1 className={styles.landingTitle}>DormDash</h1>
+        </div>
         <p className={styles.landingSubtitle}>
           Culture. Campus. Connection.
         </p>
