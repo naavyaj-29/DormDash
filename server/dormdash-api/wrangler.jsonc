@@ -1,0 +1,11 @@
+{
+  "name": "dormdash-api",
+  "main": "src/index.js",            // or "src/index.ts" if that's what you have
+  "compatibility_date": "2025-11-15",
+  "compatibility_flags": ["nodejs_compat"],
+
+  "vars": {
+    "MONGODB_DB": "dormdash",               // or your actual DB name
+    "CORS_ORIGIN": "http://localhost:5174"  // later: your real frontend domain
+  }
+}
