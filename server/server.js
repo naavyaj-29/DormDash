@@ -7,9 +7,6 @@ import dotenv from "dotenv";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
-import axios from "axios";
-import fs from "fs";
-import generateRoutes from "./generateRoutes.js"; // keep this
 
 dotenv.config();
 
@@ -21,11 +18,8 @@ app.use(express.json());
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// --- Static serving for images AND audio ---
+// --- Static serving for uploaded images ---
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-// --- Mount generate routes (router file) ---
-app.use("/api/generate", generateRoutes);
 
 // --- Multer storage config for images ---
 const storage = multer.diskStorage({
@@ -54,6 +48,9 @@ mongoose
   });
 
 // --- Schema / Model ---
+// NOTE: `dishMatters` is the canonical field for "Why this dish matters".
+// We still keep `culturalNote` so old data doesn't break.
+
 const mealSchema = new mongoose.Schema(
   {
     title: String,
@@ -66,24 +63,18 @@ const mealSchema = new mongoose.Schema(
     servingsLeft: Number,
     image: String,
     tags: [String],
-    dishMatters: String,
-    culturalNote: String,
+    dishMatters: String, // ✅ new field
+    culturalNote: String, // legacy / backward-compat
     rating: Number,
     orders: Number,
-    originKey: String,
+    originKey: String, // can be null/undefined if user doesn't pick origin
     lat: Number,
     lng: Number,
-
-    // ⭐ NEW FIELD to store generated history
-    generatedHistory: {
-      text: String,
-      audioUrl: String,
-      createdAt: { type: Date, default: Date.now },
-    },
   },
   { timestamps: true }
 );
 
+// Transform _id -> id so the frontend can keep using `meal.id`
 mealSchema.set("toJSON", {
   transform: (doc, ret) => {
     ret.id = ret._id.toString();
@@ -122,9 +113,9 @@ userSchema.set("toJSON", {
 
 const User = mongoose.model("User", userSchema);
 
-// --- ROUTES ---
+// --- Routes ---
 
-// Image upload
+// Image upload: returns { url } that frontend will save to Mongo
 app.post("/api/upload", upload.single("image"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
@@ -151,6 +142,7 @@ app.post("/api/meals", async (req, res) => {
   try {
     const payload = { ...req.body };
 
+    // For safety, if dishMatters not set but culturalNote is sent, map it
     if (!payload.dishMatters && payload.culturalNote) {
       payload.dishMatters = payload.culturalNote;
     }
@@ -164,7 +156,7 @@ app.post("/api/meals", async (req, res) => {
   }
 });
 
-// PATCH reserve a serving
+// PATCH to reserve a serving
 app.patch("/api/meals/:id/reserve", async (req, res) => {
   try {
     const meal = await Meal.findById(req.params.id);
@@ -241,88 +233,5 @@ app.get("/api/users", async (req, res) => {
   }
 });
 
-// --------------------------------------------------
-// ⭐ NEW: GENERATE DISH HISTORY (Gemini + ElevenLabs)
-// --------------------------------------------------
-
-app.post("/api/generate/history", async (req, res) => {
-  try {
-    const { title, description, tags, culturalNote } = req.body;
-
-    // Debug: Log the API key being used
-    const apiKey = process.env.GEMINI_API_KEY;
-    console.log(
-      "🔑 Using Gemini API Key:",
-      apiKey ? `${apiKey.substring(0, 10)}...` : "NOT SET"
-    );
-
-    if (!apiKey) {
-      return res
-        .status(500)
-        .json({ error: "GEMINI_API_KEY not set in environment" });
-    }
-
-    // --- Gemini prompt ---
-    const prompt = `
-Write a warm, short (120–180 words) cultural history about this dish.
-Dish title: ${title}
-Description: ${description}
-Tags: ${tags}
-Cultural note: ${culturalNote}
-    `;
-
-    // --- Gemini call ---
-    const geminiResp = await axios.post(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${apiKey}`,
-      { contents: [{ parts: [{ text: prompt }] }] }
-    );
-
-    const generatedText =
-      geminiResp.data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
-
-    if (!generatedText)
-      return res.status(500).json({ error: "Gemini returned no text" });
-
-    // --- ElevenLabs call ---
-    const audioResp = await axios.post(
-      "https://api.elevenlabs.io/v1/text-to-speech/pNInz6obpgDQGcFmaJgB",
-      { text: generatedText },
-      {
-        responseType: "arraybuffer",
-        headers: {
-          "xi-api-key": process.env.ELEVEN_API_KEY,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    // save the audio locally
-    const audioFile = `history_${Date.now()}.mp3`;
-    const audioPath = path.join(__dirname, "uploads", audioFile);
-    fs.writeFileSync(audioPath, audioResp.data);
-
-    const audioUrl = `${req.protocol}://${req.get("host")}/uploads/${audioFile}`;
-
-    return res.json({
-      text: generatedText,
-      audioUrl,
-    });
-
-  } catch (err) {
-    console.error(
-      "❌ Generation error:",
-      err.response?.status,
-      err.response?.data || err.message
-    );
-    const errorMsg =
-      err.response?.data?.error?.message ||
-      err.message ||
-      "Failed to generate history";
-    res.status(err.response?.status || 500).json({ error: errorMsg });
-  }
-});
-
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () =>
-  console.log(`API listening on http://localhost:${PORT}`)
-);
+const port = process.env.PORT || 4000;
+app.listen(port, () => console.log(`API listening on http://localhost:${port}`));
