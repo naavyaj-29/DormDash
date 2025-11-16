@@ -344,7 +344,7 @@
 /* ========== Modal ========== */
 .modalBackdrop {
   position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
-  background: rgba(0,0,0,0.5); z-index:60; padding:20px;
+  background: rgba(0,0,0,0.5); z-index:100; padding:20px;
 }
 .modal {
   width:100%; max-width:900px; background:white; border-radius:16px; box-shadow: var(--shadow-xl); overflow:hidden;
@@ -529,6 +529,120 @@
 }
 .landingRegisterBtn:hover {
   background: linear-gradient(90deg, var(--orange-600), #db2777);
+}
+
+/* ========== Register Form ========== */
+.registerCard {
+  width: 100%;
+  max-width: 520px;
+  background: white;
+  padding: 32px;
+  border-radius: 18px;
+  box-shadow: var(--shadow-xl);
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.registerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  border-bottom: 2px solid var(--gray-100);
+  padding-bottom: 16px;
+}
+.registerHeader h2 {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--orange-500);
+  margin: 0;
+}
+.registerForm {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.registerActions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--gray-100);
+}
+.registerActions .primaryButton {
+  flex: 1;
+  background: linear-gradient(90deg, var(--orange-500), #ec4899);
+}
+.registerActions .primaryButton:hover {
+  background: linear-gradient(90deg, var(--orange-600), #db2777);
+}
+.errorMsg {
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 12px 14px;
+  border-left: 4px solid #dc2626;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.checkboxGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 8px 12px;
+  background: var(--gray-50);
+  border-radius: 8px;
+  border: 1px solid var(--gray-200);
+  transition: background .15s, border-color .15s;
+}
+.checkboxLabel:hover {
+  background: var(--gray-100);
+  border-color: var(--orange-300);
+}
+.checkboxLabel input {
+  cursor: pointer;
+  accent-color: var(--orange-500);
+}
+.roleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 12px 14px;
+  background: var(--gray-50);
+  border-radius: 10px;
+  border: 2px solid var(--gray-200);
+  transition: all .15s;
+}
+.radioLabel:hover {
+  background: linear-gradient(135deg, rgba(249,115,22,0.05), rgba(236,72,153,0.05));
+  border-color: var(--orange-300);
+}
+.radioLabel input {
+  cursor: pointer;
+  accent-color: var(--orange-500);
+}
+.label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #111827;
+  font-size: 14px;
+  letter-spacing: 0.3px;
 }
 
 

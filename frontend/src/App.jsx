@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./App.module.css";
 import CommunityPage from "./CommunityPage.jsx";
+import RegisterForm from "./RegisterForm.jsx";
 import "./index.css";
 
 import {
@@ -34,6 +35,7 @@ const safeTagClass = (tag) =>
 const ChefPostingSystem = () => {
   const [currentView, setCurrentView] = useState("landing");
   const [user, setUser] = useState(null);
+  const [showRegisterForm, setShowRegisterForm] = useState(false);
   const [meals, setMeals] = useState([]);
   const [filteredMeals, setFilteredMeals] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -247,7 +249,7 @@ const ChefPostingSystem = () => {
         </p>
         <button
           className={styles.landingRegisterBtn}
-          onClick={() => setCurrentView("feed")}
+          onClick={() => setShowRegisterForm(true)}
         >
           Register Now
         </button>
@@ -1107,6 +1109,17 @@ const ChefPostingSystem = () => {
         <MealDetailModal
           meal={selectedMeal}
           onClose={() => setSelectedMeal(null)}
+        />
+      )}
+
+      {showRegisterForm && (
+        <RegisterForm
+          onClose={() => setShowRegisterForm(false)}
+          onSuccess={(newUser) => {
+            setUser(newUser);
+            setShowRegisterForm(false);
+            setCurrentView("feed");
+          }}
         />
       )}
     </div>
