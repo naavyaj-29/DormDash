@@ -1,1 +1,75 @@
 
+#DormDash
+DormDash is a peer-to-peer homemade meal network that helps students share culturally meaningful and affordable home-cooked meals on campus. It’s designed to support belonging, community, and accessibility through food.
+
+##🚀 Inspiration
+
+Many students, especially those far from home, from underrepresented backgrounds, or with dietary restrictions, struggle to find food that reflects their culture, fits their needs, or makes them feel connected on campus. DormDash reimagines food not just as nourishment, but as a path to community, identity, and belonging.
+
+##🔍 User Research
+
+**From interviews with 60+ students:**
+
+83% miss home-cooked meals
+
+95% would buy meals made by other students
+
+85% said multicultural meals would improve their campus experience
+
+Students are willing to spend $5–$9 per meal
+
+These insights shaped our feature set and validated the need for DormDash.
+
+##🍽️ What DormDash Does
+
+DormDash enables students to share and discover homemade, culturally meaningful, and dietary-friendly meals.
+
+**For cooks:**
+
+Post homemade meals with ingredient transparency
+
+Add cultural context or the story behind the dish
+
+Set low-cost or pay-what-you-can prices
+
+Tag meals with allergens, dietary needs, and cultural labels
+
+**For students looking for food:**
+
+Discover meals by culture, comfort, or dietary needs
+
+Filter for allergens
+
+Access affordable portions
+
+Connect directly with the cook
+
+##🛠️ How We Built It
+**Frontend**
+
+React + Vite for a fast, responsive UI
+
+Custom UI with CSS Modules and Lucide icons
+
+Three.js visualization to represent global, multicultural meal connections
+
+Search, filtering, modals, and dynamic meal cards using React hooks
+
+**Backend**
+
+Node.js + Express REST API
+
+Routes for meals, tags, users, reservations, and messaging
+
+MongoDB with Mongoose for scalable, flexible schemas
+
+Indexed queries for fast filtering and browsing
+
+**Database**
+
+MongoDB collections for users, posts, tags, chats, and reservations
+
+Structured for quick lookups and real-time updates
+
+Flexible tagging system for allergens, cultures, and custom notes
+
